@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import input_data
 
 import time
@@ -13,7 +14,6 @@ learning_rate = 0.1
 num_steps = 10000
 batch_size = 128
 display_step = 100
-
 n_hidden_1 = 256
 n_hidden_2 = 256
 num_input = 784
@@ -64,15 +64,22 @@ def test(model):
 	for i in range(n_images):
 		print('Model prediction: %d' % preds[i])
 
-if __name__ == '__main__':
+def _main():
 	# enable the logging info
 	tf.logging.set_verbosity(tf.logging.INFO)
 	# create model
-	model = tf.estimator.Estimator(model_fn, model_dir='model/mnist_estim')
+	model_dir = 'model/mnist_esti'
+	model = tf.estimator.Estimator(model_fn, model_dir=model_dir)
 	# train model
-	#train_model(model)
+	if not os.path.exists(model_dir):
+		train_model(model)
+	if not os.path.exists(model_dir):
+		print('model need to train')
+		return
 	# eval model
 	eval_model(model)
 	# predict model
 	test(model)
 
+if __name__ == '__main__':
+	_main()
