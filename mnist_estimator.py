@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import random
 import os
 import input_data
 
 import time
 import numpy as np
 import tensorflow as tf
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 # init train constant
 learning_rate = 0.1
@@ -58,11 +59,14 @@ def eval_model(model):
 # test to predict model
 def test(model):
 	n_images = 4
-	test_images = mnist.test.images[:n_images]
+	index = random.randint(0, mnist.test.labels.size - n_images)
+	test_images = mnist.test.images[index : index + n_images]
 	input_fn = tf.estimator.inputs.numpy_input_fn(x={'images': test_images}, shuffle=False)
 	preds = list(model.predict(input_fn))
 	for i in range(n_images):
 		print('Model prediction: %d' % preds[i])
+		plt.imshow(np.reshape(test_images[i], [28, 28]), cmap='gray')
+		plt.show()
 
 def _main():
 	# enable the logging info
